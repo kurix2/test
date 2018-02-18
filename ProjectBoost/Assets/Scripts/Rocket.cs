@@ -8,6 +8,10 @@ public class Rocket : MonoBehaviour {
     Rigidbody rigidBody;
     AudioSource audioSource;
 
+    [SerializeField] float rcsThrust = 100f;
+    [SerializeField] float mainThrust = 100f;
+
+
 	// Use this for initialization
 	void Start () {
         rigidBody = GetComponent<Rigidbody>();
@@ -16,34 +20,51 @@ public class Rocket : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        ProcessInput();
+        Thrust();
+        Rotate();
 	}
 
-    void ProcessInput()
+    private void OnCollisionEnter(Collision collision)
     {
-        if (Input.GetKey(KeyCode.Space)){
-            print("Thrusting");
-            rigidBody.AddRelativeForce(Vector3.up);
+        switch(collision.gameObject.tag) {
+            case "Friendly":
+                break;
+            case "Dead":
+                print("Dead");
+                break;
+            case "OK":
+                break;
+            case "Fuel":
+                break;
+        }
+    }
 
-            if (!audioSource.isPlaying)
-            {
+    private void Rotate() {
+
+        rigidBody.freezeRotation = true; //
+
+        float rotationThisFrame = rcsThrust * Time.deltaTime;
+
+        if (Input.GetKey(KeyCode.A)) {
+            transform.Rotate(Vector3.forward * rotationThisFrame);
+        }
+        else if (Input.GetKey(KeyCode.D)) {
+            transform.Rotate(-Vector3.forward * rotationThisFrame);
+        }
+
+        rigidBody.freezeRotation = false;
+    }
+     
+    private void Thrust() {
+        if (Input.GetKey(KeyCode.Space)) {
+            rigidBody.AddRelativeForce(Vector3.up * mainThrust);
+
+            if (!audioSource.isPlaying) { 
                 audioSource.Play();
             }
-         
         }
-        else
-        {
+        else {
             audioSource.Stop();
-        }
-
-
-        if (Input.GetKey(KeyCode.A)){
-            print("Rotating Left");
-            transform.Rotate(Vector3.forward);
-        }
-        else if (Input.GetKey(KeyCode.D)){
-            print("Roating Right");
-            transform.Rotate(-Vector3.forward);
         }
     }
 }
