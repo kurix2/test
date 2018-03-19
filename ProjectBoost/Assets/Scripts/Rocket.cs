@@ -84,6 +84,8 @@ public class Rocket : MonoBehaviour {
         audioSource.Stop();
         audioSource.PlayOneShot(death);
         deathParticles.Play();
+
+        Invoke("HideChildren", 0.1f);      
         Invoke("LoadFirstLevel", levelLoadDelay);
     }
 
@@ -135,5 +137,14 @@ public class Rocket : MonoBehaviour {
         }
 
         mainEngineParticles.Play();
+    }
+
+    private void HideChildren(){
+        Renderer[] rs = GetComponentsInChildren<Renderer>();
+        foreach (Renderer r in rs)
+        {
+            if (r != GameObject.Find("Explosion Particles").GetComponent<Renderer>())
+            r.enabled = false;
+        }
     }
 }
