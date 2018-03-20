@@ -145,6 +145,9 @@ public class Rocket : MonoBehaviour {
         {
             if (r != GameObject.Find("Explosion Particles").GetComponent<Renderer>())
             r.enabled = false;
+            
         }
+        GetComponentInChildren<Light>().enabled = false;
+
     }
 }
